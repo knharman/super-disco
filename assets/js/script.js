@@ -12,7 +12,7 @@ var taskEditorSetup = function(hour) {
 
     $("<span>", {
         class: "taskText",
-        id: hour + "-taskArea"
+        id: hour + "-taskSpan"
     }).click(function(){
         $(this).hide();
         $("#" + hour + "-textArea").show().select()
@@ -25,7 +25,8 @@ var taskEditorSetup = function(hour) {
         id: hour + "-textArea"
     }).blur(function(){
         $(this).hide();
-        $("#" + hour + "-taskArea").show()
+        var currentTextAreaText = $(this).val()
+        $("#" + hour + "-taskSpan").text(currentTextAreaText).show()
     })
     .hide()
     .appendTo(taskInfo)
