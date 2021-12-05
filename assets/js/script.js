@@ -91,14 +91,15 @@ var calendarSetup = function() {
         }).text(hour).appendTo(timeblock)
         
         taskEditorSetup(hour, persistingTasks[i]).appendTo(timeblock)
-
         $("<div>", {
             class: "col saveBtn",
             id: hour + "-saveTask"
         }).click(function() {
             var spanText =  $("#" + hour + "-taskSpan").text()
             putTaskLocalStorage(arrayIndex, spanText)
-        }).text("Save").appendTo(timeblock)
+        }).append($("<i>", {
+            class: "fas fa-save"
+        })).appendTo(timeblock)
 
         timeblock.appendTo($("#timeblocks"))
     }
