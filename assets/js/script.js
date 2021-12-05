@@ -4,7 +4,7 @@ var currentDate = function() {
     $("#currentDay").text(todayFormatted)
 }
 
-var taskEditorSetup = function(hour) {
+var taskEditorSetup = function(hour, persistingTask) {
     let taskInfo = $("<div>", {
         class: "col-9 d-flex justify-content-start",
         id: hour + "-taskInfo"
@@ -16,7 +16,7 @@ var taskEditorSetup = function(hour) {
     $("<span>", {
         class: "taskText description",
         id: hour + "-taskSpan"
-    }).appendTo(taskInfo)
+    }).text(persistingTask).appendTo(taskInfo)
 
     $("<textarea>", {
         class: "editTask w-100 h-100",
@@ -32,24 +32,47 @@ var taskEditorSetup = function(hour) {
     return taskInfo
 }
 
+var putTaskLocalStorage = function(hourIndex, text) {
+    var existing = localStorage.getItem("workdayScheduler")
+    if(!existing) {
+        existing = ["","","","","","","",""]
+    } else {
+        existing = JSON.parse(existing)
+    }
+    // existing will either be array of empty strings or legit task data
+    existing[hourIndex] = text
+    console.log(text)
+    localStorage.setItem("workdayScheduler", JSON.stringify(existing))
+}
+
 var calendarSetup = function() {
     var hoursArr = ["9am", "10am", "11am", "12pm", "1pm", "2pm", "3pm", "4pm", "5pm"]
+    var persistingTasks =  localStorage.getItem("workdayScheduler")
+    persistingTasks = JSON.parse(persistingTasks)
+
     for(i=0; i<hoursArr.length; i++) {
+        let hour = hoursArr[i];
+        
+        let arrayIndex = i; // workaround for jQuery strange onClick behavior
+
         let timeblock = $("<div>", {
             class: "row time-block",
-            id: hoursArr[i] + "-timeblock"
+            id: hour + "-timeblock"
         })
 
         let displayTime = $("<div>", {
             class: "col hour",
-            id: hoursArr[i] + "-displayTime"
-        }).text(hoursArr[i]).appendTo(timeblock)
+            id: hour + "-displayTime"
+        }).text(hour).appendTo(timeblock)
         
-        taskEditorSetup(hoursArr[i]).appendTo(timeblock)
+        taskEditorSetup(hour, persistingTasks[i]).appendTo(timeblock)
 
         let saveTask = $("<div>", {
             class: "col saveBtn",
-            id: hoursArr[i] + "-saveTask"
+            id: hour + "-saveTask"
+        }).click(function() {
+            var spanText =  $("#" + hour + "-taskSpan").text()
+            putTaskLocalStorage(arrayIndex, spanText)
         }).text("Save").appendTo(timeblock)
 
         timeblock.appendTo($("#timeblocks"))
