@@ -72,8 +72,12 @@ var colorCode = function() {
 }
 
 var calendarSetup = function() {
-    var persistingTasks =  localStorage.getItem("workdayScheduler")
-    persistingTasks = JSON.parse(persistingTasks)
+    var persistingTasks = localStorage.getItem("workdayScheduler")
+    if(!persistingTasks) {
+        persistingTasks = ["","","","","","","",""]
+    } else {
+        persistingTasks = JSON.parse(persistingTasks)
+    }
 
     for(i=0; i<hoursArr.length; i++) {
         let hour = hoursArr[i];
